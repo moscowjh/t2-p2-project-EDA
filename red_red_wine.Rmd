@@ -31,12 +31,17 @@ theme_set(theme_minimal(20))
 # Load the Data
 rw <- read.csv("wineQualityReds.csv")
 ```
+### Intro
 
-This is one of two datasets related to red and white variants of Portuguese 
-"Vinho Verde" wine.
+Objective of this project is to perform EDA (exploratory data anlalysis) examining  relationships among variables in the red wine dataset. This is one of two datasets
+presented by Udacity which relate to red and white variants of Portuguese Vinho 
+Verde wine.
 
-There are a total of twelve variables including eleven input variables (based on 
-physicochemical tests):
+There are a total of 1599 observations (wines) in the dataset displaying twelve 
+variables including eleven input variables (based on physicochemical tests) and 
+ one output variable based on sensory data, a quality score.
+ 
+The physico-chemical variables are:
 
 1. fixed acidity (tartaric acid - g / dm^3)
 2. volatile acidity (acetic acid - g / dm^3)
@@ -49,10 +54,9 @@ physicochemical tests):
 9. pH
 10. sulphates (potassium sulphate - g / dm3)
 11. alcohol (% by volume)
-
 12. quality (score between 0 and 10)
 
-And also one output variable based on sensory data: the quality score. This is 
+ This is 
 the median of at least 3 evaluations made by wine experts with each expert grading 
 wine quality between 0 (very bad) and 10 (very excellent).
 
@@ -110,11 +114,15 @@ coincide with the following ratings:
 -  6 = "Good"
 -  7 = "Very Good"
 -  8 = "Superior"
+```{r}
+# let's turn X into a factor
+rw$quality <- factor(rw$quality)
+```
 
 ```{r}
 ggplot(rw) +
   geom_histogram(aes(x = quality), color = "black",
-                 fill = "#F79420", binwidth = 1)
+                 fill = "#F79420", stat="count")
 ```
 
 ### Histogram of Other Variables
@@ -226,15 +234,23 @@ gather your observations and add your own if you have other thoughts!
 missing measurements - how to accomplish in R
 ### What is/are the main feature(s) of interest in your dataset?
 Biggest question for me is how/whether the different input variables correlate 
-or predict the output variable, quality
+or predict the output variable, quality. Am particularly curious to see how
+alchohol level correlates with quality
+Will also be interesting to see how the different acidity-related variables 
+correlate with each other and with qulaity.
 ### What other features in the dataset do you think will help support your \
 investigation into your feature(s) of interest?
 
 ### Did you create any new variables from existing variables in the dataset?
-
+I did not create any new variables, but I did convert two of the existing variables:
+X (renaming it 'ID') and quality into factor variables. Converting them to factors
+means that R won't try to summarize them the same way as it does integers.
 ### Of the features you investigated, were there any unusual distributions? \
-Did you perform any operations on the data to tidy, adjust, or change the form \
-of the data? If so, why did you do this?
+## Did you perform any operations on the data to tidy, adjust, or change the form \
+### of the data? If so, why did you do this?
+This is a relatively small dataset so log or exponential transformations don't
+do anything to make histograms easier to understand. The only thing I did was to 
+adjust the binwidth to make the counts at different values easier to read.
 
 
 # Bivariate Plots Section
