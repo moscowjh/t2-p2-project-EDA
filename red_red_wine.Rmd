@@ -1,9 +1,17 @@
----
-output:
-  rmarkdown::github_document
+# ---
+# output:
+#  rmarkdown::github_document
 #  html_document: default
 #  pdf_document: default
 ---
+
+---
+title: "Red, Red Wine"
+author: Jason Horowitz
+date: March 21, 2018
+output: github_document
+---
+
 Red, Red Wine by Jason Horowitz
 ========================================================
 
