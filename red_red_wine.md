@@ -21,7 +21,7 @@ The physico-chemical variables are (descriptive text included as indicated):
 5.  **chlorides** (sodium chloride - g / dm^3): the amount of salt in the wine
 6.  **free sulfur dioxide** (mg / dm^3): the free form of SO2 exists in equilibrium between molecular SO2 (as a dissolved gas) and bisulfite ion; it prevents microbial growth and the oxidation of wine.
 7.  **total sulfur dioxide** (mg / dm^3): amount of free and bound forms of S02; in low concentrations, SO2 is mostly undetectable in wine, but at free SO2 concentrations over 50 ppm, SO2 becomes evident in the nose and taste of wine.
-8.  **density** (g / cm^3): the density of water is close to that of water depending on the percent alcohol and sugar content.
+8.  **density** (g / cm^3): the density of wine is close to that of water depending on the percent alcohol and sugar content.
 9.  **pH**: describes how acidic or basic a wine is on a scale from 0 (very acidic) to 14 (very basic); most wines are between 3-4 on the pH scale
 10. **sulphates** (potassium sulphate - g / dm3): a wine additive which can contribute to sulfur dioxide gas (S02) levels, wich acts as an antimicrobial and antioxidant.
 11. **alcohol** (% by volume): the percent alcohol content of the wine.
@@ -165,7 +165,7 @@ ggplot(rw) +
                  fill = "#CCFFCC", binwidth = .01)
 ```
 
-![](red_red_wine_files/figure-markdown_github/unnamed-chunk-7-1.png) The distribution for volatile acidity also seems to be longtailed - and with some outliers. Let's perform a similar transformation - also eliminating the top and bottom 1% of the values.
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-7-1.png) The distribution for volatile acidity also seems to be longtailed - and with some outliers. Let's perform a similar log10 transformation - also eliminating the top and bottom 1% of the values.
 
 ``` r
 ggplot(rw) +
@@ -267,15 +267,51 @@ ggplot(rw) +
 
 ![](red_red_wine_files/figure-markdown_github/unnamed-chunk-15-1.png) This plot definitely is more normal in its appearance than the previous one.
 
-#### Sulphates
+#### Free Sulfur Dioxide
 
 ``` r
 ggplot(rw) +
-  geom_histogram(aes(x = sulphates), color = "black",
-                 fill = "#CCFF00", binwidth = .05)
+  geom_histogram(aes(x = free.sulfur.dioxide), color = "black",
+                 fill = "#99FF99", binwidth = 1)
 ```
 
-![](red_red_wine_files/figure-markdown_github/unnamed-chunk-16-1.png)
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-16-1.png) \#\#\#\# Total Sulfur Dioxide
+
+``` r
+ggplot(rw) +
+  geom_histogram(aes(x = total.sulfur.dioxide), color = "black",
+                 fill = "#669933", binwidth = 1)
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-17-1.png) Sulfur dioxide in both its free and bound form is used as a preservative (see above). Since the plots for both are right skewed, let's perform a square root transformation on each.
+
+First on the free sulfur dioxide:
+
+``` r
+ggplot(rw) +
+  geom_histogram(aes(x = sqrt(free.sulfur.dioxide)), color = "black",
+                 fill = "#99FF99", binwidth = .25)
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-18-1.png) And total sulfur dioxide
+
+``` r
+ggplot(rw) +
+  geom_histogram(aes(x = sqrt(total.sulfur.dioxide)), color = "black",
+                 fill = "#669933", binwidth = .25)
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-19-1.png) That mostly got rid of the right skew and the curves are more normal.
+
+#### Density
+
+``` r
+ggplot(rw) +
+  geom_histogram(aes(x = density), color = "black",
+                 fill = "#660033", binwidth = .0005)
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-20-1.png) Density is a quite a normal distribution with few outliers: mean and median are almost identical.
 
 #### pH (Overall Acidity)
 
@@ -285,37 +321,17 @@ ggplot(rw) +
                  fill = "#CC0033", binwidth = .01)
 ```
 
-![](red_red_wine_files/figure-markdown_github/unnamed-chunk-17-1.png)
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-21-1.png)
 
-#### Density
-
-``` r
-ggplot(rw) +
-  geom_histogram(aes(x = density), color = "black",
-                 fill = "#660033", binwidth = .0001)
-```
-
-![](red_red_wine_files/figure-markdown_github/unnamed-chunk-18-1.png)
-
-#### Total Sulfur Dioxide
+#### Sulphates
 
 ``` r
 ggplot(rw) +
-  geom_histogram(aes(x = total.sulfur.dioxide), color = "black",
-                 fill = "#669933", binwidth = 1)
+  geom_histogram(aes(x = sulphates), color = "black",
+                 fill = "#CCFF00", binwidth = .05)
 ```
 
-![](red_red_wine_files/figure-markdown_github/unnamed-chunk-19-1.png)
-
-#### Free Sulfur Dioxide
-
-``` r
-ggplot(rw) +
-  geom_histogram(aes(x = free.sulfur.dioxide), color = "black",
-                 fill = "#99FF99", binwidth = 1)
-```
-
-![](red_red_wine_files/figure-markdown_github/unnamed-chunk-20-1.png)
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
 #### Alcohol Content % By Volume
 
@@ -326,7 +342,7 @@ ggplot(rw) +
                  fill = "#FF6666", binwidth = .1)
 ```
 
-![](red_red_wine_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-23-1.png)
 
 > **Tip**: Make sure that you leave a blank line between the start / end of each code block and the end / start of your Markdown text so that it is formatted nicely in the knitted text. Note as well that text on consecutive lines is treated as a single space. Make sure you have a blank line between your paragraphs so that they too are formatted for easy readability.
 
