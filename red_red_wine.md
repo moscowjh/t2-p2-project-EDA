@@ -318,10 +318,12 @@ ggplot(rw) +
 ``` r
 ggplot(rw) +
   geom_histogram(aes(x = pH), color = "black",
-                 fill = "#CC0033", binwidth = .01)
+                 fill = "#CC0033", binwidth = .05)
 ```
 
 ![](red_red_wine_files/figure-markdown_github/unnamed-chunk-21-1.png)
+
+pH (overall acidity) also shows a normalish distribution with few outliers.
 
 #### Sulphates
 
@@ -333,6 +335,17 @@ ggplot(rw) +
 
 ![](red_red_wine_files/figure-markdown_github/unnamed-chunk-22-1.png)
 
+Sulphates, an additive which serves as a preservative, demonstrates a right skewed curve with a long tail. Let's see what how it looks after a square root transformation.
+
+``` r
+ggplot(rw) +
+  geom_histogram(aes(x = sqrt(sulphates)), color = "black",
+                 fill = "#CCFF00", binwidth = .02) +
+  scale_x_continuous(lim = c(0.5, quantile(rw$sulfates, 0.95)))
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-23-1.png) That's normalish.
+
 #### Alcohol Content % By Volume
 
 ``` r
@@ -342,9 +355,16 @@ ggplot(rw) +
                  fill = "#FF6666", binwidth = .1)
 ```
 
-![](red_red_wine_files/figure-markdown_github/unnamed-chunk-23-1.png)
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-24-1.png)
 
-> **Tip**: Make sure that you leave a blank line between the start / end of each code block and the end / start of your Markdown text so that it is formatted nicely in the knitted text. Note as well that text on consecutive lines is treated as a single space. Make sure you have a blank line between your paragraphs so that they too are formatted for easy readability.
+``` r
+summary(rw$alcohol)
+```
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##    8.40    9.50   10.20   10.42   11.10   14.90
+
+Alcohol content by volume slightly right-skewed and in the 9.5-11 range. This is fairly intutive to anyone who drinks wine. It will be interesting to look at correlations between high/low alcohol content and the quality score.
 
 Univariate Analysis
 ===================
