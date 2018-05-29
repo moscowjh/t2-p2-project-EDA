@@ -342,8 +342,8 @@ ggplot(rw) +
 summary(rw$alcohol)
 ```
 
-Alcohol content by volume slightly right-skewed and in the 9.5-11 range. This is 
-fairly intutive to anyone who drinks wine. It will be interesting to look at correlations 
+Alcohol content by volume is slightly right-skewed and in the 9.5-11 range. This 
+is fairly intutive to anyone who drinks wine. It will be interesting to look at correlations 
 between high/low alcohol content and the quality score.
 
 
@@ -354,7 +354,14 @@ reflect on and summarize what you've found. Use the questions below to help you
 gather your observations and add your own if you have other thoughts!
 
 ### What is the structure of your dataset?
-missing measurements - how to accomplish in R
+
+The structure of the dataset is as discussed in the "Structure and Summary" section
+above. One major transformation we made was converting the output variable "quality"
+from an integer value to a factor.  A few of the input variables appear to be related
+of each other: pH, volatile acidity, fixed acidity and maybe, citric acid; free 
+sulfur dioxide and total sulfur dioxide. It will be interesting to see how those
+items correlate with each other and with the quality score.
+
 ### What is/are the main feature(s) of interest in your dataset?
 Biggest question for me is how/whether the different input variables correlate 
 or predict the output variable, quality. Am particularly curious to see how
