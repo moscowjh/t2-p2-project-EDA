@@ -363,25 +363,36 @@ sulfur dioxide and total sulfur dioxide. It will be interesting to see how those
 items correlate with each other and with the quality score.
 
 ### What is/are the main feature(s) of interest in your dataset?
+
+The main feature of interest is the distribution of the quality variable. More than
+three-quarters of the observations are of the middle two ratings which means that 
+only about 400 items were classified at either the upper or lower extremes. It should
+be possible to examine that group of 'very good' or 'very bad' wines and to correlate
+with other variables.
+
+### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+
 Biggest question for me is how/whether the different input variables correlate 
 or predict the output variable, quality. Am particularly curious to see how
-alchohol level correlates with quality
-Will also be interesting to see how the different acidity-related variables 
-correlate with each other and with qulaity.
-### What other features in the dataset do you think will help support your \
-investigation into your feature(s) of interest?
+alchohol level correlates with quality. Will also be interesting to see how the different acidity-related variables correlate with each other and with qulaity.
+
 
 ### Did you create any new variables from existing variables in the dataset?
+
 I did not create any new variables, but I did convert two of the existing variables:
-X (renaming it 'ID') and quality into factor variables. Converting them to factors
-means that R won't try to summarize them the same way as it does integers.
+X (renaming it 'ID') and quality into factor variables. We don't need these variables tobe summarized and it makes more intuitive sense for these variables to be factors.
+Have not at this point determined that it makes sense to create any new variables 
+from the existing ones, though perhaps something will come out of the bivariate or
+multivariate analysis.
+
 ### Of the features you investigated, were there any unusual distributions? \
 ## Did you perform any operations on the data to tidy, adjust, or change the form \
 ### of the data? If so, why did you do this?
-This is a relatively small dataset so log or exponential transformations don't
-do anything to make histograms easier to understand. The only thing I did was to 
-adjust the binwidth to make the counts at different values easier to read.
 
+Yes, several of the variables'  plots displayed a skew or a relatively large number 
+of outliers. I transformed these variables using base-10 logarithims, square root 
+operations, or, in a couple cases, buy cutting off the outliers. As a result, the 
+transformed plots were easier to read and showed more normal distributions.
 
 # Bivariate Plots Section
 

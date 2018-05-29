@@ -364,7 +364,7 @@ summary(rw$alcohol)
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
     ##    8.40    9.50   10.20   10.42   11.10   14.90
 
-Alcohol content by volume slightly right-skewed and in the 9.5-11 range. This is fairly intutive to anyone who drinks wine. It will be interesting to look at correlations between high/low alcohol content and the quality score.
+Alcohol content by volume is slightly right-skewed and in the 9.5-11 range. This is fairly intutive to anyone who drinks wine. It will be interesting to look at correlations between high/low alcohol content and the quality score.
 
 Univariate Analysis
 ===================
@@ -373,14 +373,25 @@ Univariate Analysis
 
 ### What is the structure of your dataset?
 
-missing measurements - how to accomplish in R \#\#\# What is/are the main feature(s) of interest in your dataset? Biggest question for me is how/whether the different input variables correlate or predict the output variable, quality. Am particularly curious to see how alchohol level correlates with quality Will also be interesting to see how the different acidity-related variables correlate with each other and with qulaity. \#\#\# What other features in the dataset do you think will help support your
-investigation into your feature(s) of interest?
+The structure of the dataset is as discussed in the "Structure and Summary" section above. One major transformation we made was converting the output variable "quality" from an integer value to a factor. A few of the input variables appear to be related of each other: pH, volatile acidity, fixed acidity and maybe, citric acid; free sulfur dioxide and total sulfur dioxide. It will be interesting to see how those items correlate with each other and with the quality score.
+
+### What is/are the main feature(s) of interest in your dataset?
+
+The main feature of interest is the distribution of the quality variable. More than three-quarters of the observations are of the middle two ratings which means that only about 400 items were classified at either the upper or lower extremes. It should be possible to examine that group of 'very good' or 'very bad' wines and to correlate with other variables.
+
+### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+
+Biggest question for me is how/whether the different input variables correlate or predict the output variable, quality. Am particularly curious to see how alchohol level correlates with quality. Will also be interesting to see how the different acidity-related variables correlate with each other and with qulaity.
 
 ### Did you create any new variables from existing variables in the dataset?
 
-I did not create any new variables, but I did convert two of the existing variables: X (renaming it 'ID') and quality into factor variables. Converting them to factors means that R won't try to summarize them the same way as it does integers. \#\#\# Of the features you investigated, were there any unusual distributions?
+I did not create any new variables, but I did convert two of the existing variables: X (renaming it 'ID') and quality into factor variables. We don't need these variables tobe summarized and it makes more intuitive sense for these variables to be factors. Have not at this point determined that it makes sense to create any new variables from the existing ones, though perhaps something will come out of the bivariate or multivariate analysis.
+
+### Of the features you investigated, were there any unusual distributions?
 \#\# Did you perform any operations on the data to tidy, adjust, or change the form
-\#\#\# of the data? If so, why did you do this? This is a relatively small dataset so log or exponential transformations don't do anything to make histograms easier to understand. The only thing I did was to adjust the binwidth to make the counts at different values easier to read.
+\#\#\# of the data? If so, why did you do this?
+
+Yes, several of the variables' plots displayed a skew or a relatively large number of outliers. I transformed these variables using base-10 logarithims, square root operations, or, in a couple cases, buy cutting off the outliers. As a result, the transformed plots were easier to read and showed more normal distributions.
 
 Bivariate Plots Section
 =======================
