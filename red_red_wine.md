@@ -381,7 +381,7 @@ The main feature of interest is the distribution of the quality variable. More t
 
 ### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
 
-Biggest question for me is how/whether the different input variables correlate or predict the output variable, quality. Am particularly curious to see how alchohol level correlates with quality. Will also be interesting to see how the different acidity-related variables correlate with each other and with qulaity.
+Biggest question for me is how/whether the different input variables correlate or predict the output variable, quality. Am particularly curious to see how alchohol level correlates with quality. Will also be interesting to see how the different acidity-related variables correlate with each other and with quality.
 
 ### Did you create any new variables from existing variables in the dataset?
 
@@ -397,6 +397,111 @@ Bivariate Plots Section
 =======================
 
 > **Tip**: Based on what you saw in the univariate plots, what relationships between variables might be interesting to look at in this section? Don't limit yourself to relationships between a main output feature and one of the supporting variables. Try to look at relationships between supporting variables as well.
+
+*Note* - proper way to convert factor to numeric and back is - [described in the link](https://stackoverflow.com/questions/3418128/how-to-convert-a-factor-to-integer-numeric-without-loss-of-information) **need to refactor code**
+
+    ## 'data.frame':    1599 obs. of  5 variables:
+    ##  $ quality             : Factor w/ 6 levels "3","4","5","6",..: 3 3 3 4 3 3 3 5 5 3 ...
+    ##  $ alcohol             : num  9.4 9.8 9.8 9.8 9.4 9.4 9.4 10 9.5 10.5 ...
+    ##  $ pH                  : num  3.51 3.2 3.26 3.16 3.51 3.51 3.3 3.39 3.36 3.35 ...
+    ##  $ residual.sugar      : num  1.9 2.6 2.3 1.9 1.9 1.8 1.6 1.2 2 6.1 ...
+    ##  $ total.sulfur.dioxide: num  34 67 54 60 34 40 59 21 18 102 ...
+
+    ## 'data.frame':    1599 obs. of  5 variables:
+    ##  $ quality             : Factor w/ 6 levels "3","4","5","6",..: 3 3 3 4 3 3 3 5 5 3 ...
+    ##  $ alcohol             : num  9.4 9.8 9.8 9.8 9.4 9.4 9.4 10 9.5 10.5 ...
+    ##  $ pH                  : num  3.51 3.2 3.26 3.16 3.51 3.51 3.3 3.39 3.36 3.35 ...
+    ##  $ residual.sugar      : num  1.9 2.6 2.3 1.9 1.9 1.8 1.6 1.2 2 6.1 ...
+    ##  $ total.sulfur.dioxide: num  34 67 54 60 34 40 59 21 18 102 ...
+
+    ## 'data.frame':    1599 obs. of  5 variables:
+    ##  $ quality             : num  3 3 3 4 3 3 3 5 5 3 ...
+    ##  $ alcohol             : num  9.4 9.8 9.8 9.8 9.4 9.4 9.4 10 9.5 10.5 ...
+    ##  $ pH                  : num  3.51 3.2 3.26 3.16 3.51 3.51 3.3 3.39 3.36 3.35 ...
+    ##  $ residual.sugar      : num  1.9 2.6 2.3 1.9 1.9 1.8 1.6 1.2 2 6.1 ...
+    ##  $ total.sulfur.dioxide: num  34 67 54 60 34 40 59 21 18 102 ...
+
+``` r
+# toggle quality variable factor<-->numeric (comment as appropriate) 
+#rw_subset$quality <- as.numeric(rw_subset$quality)
+# rw_subset$quality <- as.factor(rw_subset$quality)
+# first attempt to run GGpairs function to get quick plot - done with alcohol as both numeric and factoral
+ggpairs(rw_subset_fact, mapping = aes(color = quality), upper = list(combo = "dot"))
+```
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-26-1.png)
+
+``` r
+ggpairs(rw_subset_num)
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-26-2.png)
+
+``` r
+# , upper = list(continuous = wrap(cor_text, color = "red", size = 10))
+# axisLabels = 'internal'
+```
+
+``` r
+# toggle quality variable factor<-->numeric (comment as appropriate) 
+# rw$quality <- as.numeric(rw$quality)
+rw$quality <- as.factor(rw$quality)
+str(rw)
+```
+
+    ## 'data.frame':    1599 obs. of  13 variables:
+    ##  $ id                  : Factor w/ 1599 levels "1","2","3","4",..: 1 2 3 4 5 6 7 8 9 10 ...
+    ##  $ fixed.acidity       : num  7.4 7.8 7.8 11.2 7.4 7.4 7.9 7.3 7.8 7.5 ...
+    ##  $ volatile.acidity    : num  0.7 0.88 0.76 0.28 0.7 0.66 0.6 0.65 0.58 0.5 ...
+    ##  $ citric.acid         : num  0 0 0.04 0.56 0 0 0.06 0 0.02 0.36 ...
+    ##  $ residual.sugar      : num  1.9 2.6 2.3 1.9 1.9 1.8 1.6 1.2 2 6.1 ...
+    ##  $ chlorides           : num  0.076 0.098 0.092 0.075 0.076 0.075 0.069 0.065 0.073 0.071 ...
+    ##  $ free.sulfur.dioxide : num  11 25 15 17 11 13 15 15 9 17 ...
+    ##  $ total.sulfur.dioxide: num  34 67 54 60 34 40 59 21 18 102 ...
+    ##  $ density             : num  0.998 0.997 0.997 0.998 0.998 ...
+    ##  $ pH                  : num  3.51 3.2 3.26 3.16 3.51 3.51 3.3 3.39 3.36 3.35 ...
+    ##  $ sulphates           : num  0.56 0.68 0.65 0.58 0.56 0.56 0.46 0.47 0.57 0.8 ...
+    ##  $ alcohol             : num  9.4 9.8 9.8 9.8 9.4 9.4 9.4 10 9.5 10.5 ...
+    ##  $ quality             : Factor w/ 6 levels "3","4","5","6",..: 3 3 3 4 3 3 3 5 5 3 ...
+
+``` r
+ggscatmat(rw, columns = c(5,8,10:13), color="quality", alpha=0.5)
+```
+
+    ## Warning in ggscatmat(rw, columns = c(5, 8, 10:13), color = "quality", alpha
+    ## = 0.5): Factor variables are omitted in plot
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-27-1.png)
+
+``` r
+# ggscatmat(rw_subset_num, columns = 2:4, color="quality", alpha=0.8)
+```
+
+``` r
+summary(rw$quality)
+```
+
+    ##   3   4   5   6   7   8 
+    ##  10  53 681 638 199  18
+
+``` r
+summary(rw_subset_num$quality)
+```
+
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   1.000   3.000   4.000   3.636   4.000   6.000
+
+``` r
+summary(rw_subset_fact$quality)
+```
+
+    ##   3   4   5   6   7   8 
+    ##  10  53 681 638 199  18
 
 Bivariate Analysis
 ==================

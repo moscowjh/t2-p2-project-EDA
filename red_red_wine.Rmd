@@ -374,7 +374,7 @@ with other variables.
 
 Biggest question for me is how/whether the different input variables correlate 
 or predict the output variable, quality. Am particularly curious to see how
-alchohol level correlates with quality. Will also be interesting to see how the different acidity-related variables correlate with each other and with qulaity.
+alchohol level correlates with quality. Will also be interesting to see how the different acidity-related variables correlate with each other and with quality.
 
 
 ### Did you create any new variables from existing variables in the dataset?
@@ -402,8 +402,44 @@ yourself to relationships between a main output feature and one of the
 supporting variables. Try to look at relationships between supporting variables
 as well.
 
-```{r echo=FALSE, Bivariate_Plots}
+*Note* - proper way to convert factor to numeric and back is - 
+[described in the link](https://stackoverflow.com/questions/3418128/how-to-convert-a-factor-to-integer-numeric-without-loss-of-information) **need to refactor code**
 
+
+```{r echo=FALSE, Bivariate_Plots}
+# subsetting dataframe keying on most relevant variables
+rw_subset = rw[ ,c('quality', 'alcohol', 'pH', 'residual.sugar', 'total.sulfur.dioxide')]
+# names(rw_subset)
+str(rw_subset)
+rw_subset_num <- rw_subset
+rw_subset_num$quality <- as.numeric(rw_subset_num$quality)
+rw_subset_fact <- rw_subset
+str(rw_subset_fact)
+str(rw_subset_num)
+```
+```{r}
+# toggle quality variable factor<-->numeric (comment as appropriate) 
+#rw_subset$quality <- as.numeric(rw_subset$quality)
+# rw_subset$quality <- as.factor(rw_subset$quality)
+# first attempt to run GGpairs function to get quick plot - done with alcohol as both numeric and factoral
+ggpairs(rw_subset_fact, mapping = aes(color = quality), upper = list(combo = "dot"))
+ggpairs(rw_subset_num)
+# , upper = list(continuous = wrap(cor_text, color = "red", size = 10))
+# axisLabels = 'internal'
+```
+
+```{r}
+# toggle quality variable factor<-->numeric (comment as appropriate) 
+# rw$quality <- as.numeric(rw$quality)
+rw$quality <- as.factor(rw$quality)
+str(rw)
+ggscatmat(rw, columns = c(5,8,10:13), color="quality", alpha=0.5)
+# ggscatmat(rw_subset_num, columns = 2:4, color="quality", alpha=0.8)
+```
+```{r}
+summary(rw$quality)
+summary(rw_subset_num$quality)
+summary(rw_subset_fact$quality)
 ```
 
 # Bivariate Analysis
