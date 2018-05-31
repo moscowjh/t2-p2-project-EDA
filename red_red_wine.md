@@ -207,7 +207,11 @@ dim(no_citric)[1]/dim(rw)[1]
 
     ## [1] 0.08255159
 
-So 132 items (8.2% of the observations) contain no trace of citric acid. According to x of wine this makes sense because XXXXX
+So 132 items (8.2% of the observations) contain no trace of citric acid. This makes sense because the citric acid most usally found in wine is a supplment added after primary alcohol fermentation (citric acid is present only in minute quantities in grapes) In the European Union, use of citric acid for acidification is prohibited, but limited use of citric acid is permitted for removing excess iron and copper from the wine if potassium ferrocyanide is not available. [Wikipedia](https://en.wikipedia.org/wiki/Acids_in_wine#cite_note-Oxford_pg_171-6)
+
+Also note - Citric acid imparts a citric character that enhances the taste of many white and blush wines. However, citric acid is seldom used in red wine. The distinctive citric taste may not be appropriate for many types of red wine. In addition, the risk of biological instability is much greater in red wines.[Lum Eisenman, *The Home Winemaker's Manual*](https://www.homebrewit.com/a-detailed-explanation-of-acids-used-in-wine-making)
+
+The description that came with the dataset about citric acid adding 'freshness and flavor' to wine seems as though it may not apply to red wines. It certainly will be interesting to see how citric acid (and its absence) correlates with wine quality in this particular dataset.
 
 #### Residual Sugar
 
