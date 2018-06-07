@@ -43,7 +43,7 @@ There are a total of 1599 observations (wines) in the dataset displaying twelve
 variables including eleven input variables (based on physicochemical tests) and 
  one output variable based on sensory data, a quality score.
  
-The physico-chemical variables are (descriptive text included as indicated):
+The physico-chemical variables are (descriptive text from text file included with dataset):
 
 1. **fixed acidity** (tartaric acid - g / dm^3): most acids involved with wine are 
 fixed or nonvolatile (do not evaporate readily).
@@ -70,13 +70,6 @@ to sulfur dioxide gas (S02) levels, wich acts as an antimicrobial and antioxidan
 wine experts with grading  between 0 (very bad) and 10 (very excellent).
 
 # Univariate Plots Section
-
-> **Tip**: In this section, you should perform some preliminary exploration of
-your dataset. Run some summaries of the data and create univariate plots to
-understand the structure of the individual variables in your dataset. Don't
-forget to add a comment after each plot or closely-related group of plots!
-There should be multiple code chunks and text sections; the first one below is
-just to help you get started.
 
 ```{r echo=FALSE, Univariate_Plots}
 str(rw)
@@ -205,19 +198,52 @@ dim(no_citric)
 dim(no_citric)[1]/dim(rw)[1]
 ```
 So 132 items (8.2% of the observations) contain no trace of citric acid. This makes 
-sense because the citric acid most usally found in wine is  a supplment added after 
+sense because the citric acid most usally found in wine is  a supplement added after 
 primary alcohol fermentation (citric acid is present only in minute quantities in 
 grapes) In the European Union, use of citric acid for acidification is prohibited, 
 but limited use of citric acid is permitted for removing excess iron and copper 
 from the wine if potassium ferrocyanide is not available. [Wikipedia](https://en.wikipedia.org/wiki/Acids_in_wine#cite_note-Oxford_pg_171-6)
 
 Also note - 
-Citric acid imparts a citric character that enhances the taste of many white and blush wines. However, citric acid is seldom used in red wine. The distinctive citric taste may not be appropriate for many types of red wine. In addition, the risk of biological instability is much greater in red wines.[Lum Eisenman, *The Home Winemaker's Manual*](https://www.homebrewit.com/a-detailed-explanation-of-acids-used-in-wine-making)
+Citric acid imparts a citric character that enhances the taste of many white and 
+blush wines. However, citric acid is seldom used in red wine. The distinctive citric 
+taste may not be appropriate for many types of red wine. In addition, the risk of 
+biological instability is much greater in red wines.[Lum Eisenman, *The Home Winemaker's Manual*](https://www.homebrewit.com/a-detailed-explanation-of-acids-used-in-wine-making)
 
 The description that came with the dataset about citric acid adding 'freshness 
 and flavor' to wine seems as though it may not apply to red wines. It certainly will 
 be interesting to see how citric acid (and its absence) correlates with wine quality
-in this particular dataset.
+in this particular dataset. It's also interesting that most of the wines in this 
+dataset do have traces of citric acid even though these are all red wines.
+
+#### Total Acid
+
+Let's compute the sum of the three forms of acid identified in the dataset to make
+a 'total.acidity' variable. I would hypothesize that this sum should have a very strong
+negative correlation with pH (see below) in which the lower the value, the stronger
+the acid.
+
+```{r}
+# create new variable total.acid - the sum of the other three types of acidity
+rw$total.acidity <- rw$fixed.acidity + rw$volatile.acidity +
+  rw$citric.acid
+```
+
+Next, let's look at the structure of the new variable.
+
+```{r}
+# summary of total.acidity variable
+summary(rw$total.acidity)
+```
+Glancing at the summary values, it looks like this is going to be right-skewed with 
+a long tale at the higher values. Let's plot a histogram to confirm.
+
+```{r}
+ggplot(rw) +
+  geom_histogram(aes(x = total.acidity), color = "black",
+                 fill = "#ff2400", binwidth = .1)
+```
+Yep, that hypothesis was correct.
 
 #### Residual Sugar
 ```{r}
@@ -248,12 +274,16 @@ That's a little better.
 
 #### Chlorides
 
+This is the amount of salt (sodium chloride) found in the wine.
+
 ```{r}
 ggplot(rw) +
   geom_histogram(aes(x = chlorides), color = "black",
                  fill = "#9999FF", binwidth = .005)
 ```
-Chlorides definitely has a long-tail, so let's try removing the outliers.
+Chlorides definitely has a long-tail, so let's try removing the outliers.  I have 
+never experienced salt in wine as a good thing, so it would also be interesting to 
+examine the outliers on the high end of the scale.
 
 ```{r}
 ggplot(rw) +
@@ -368,11 +398,9 @@ gather your observations and add your own if you have other thoughts!
 ### What is the structure of your dataset?
 
 The structure of the dataset is as discussed in the "Structure and Summary" section
-above. One major transformation we made was converting the output variable "quality"
-from an integer value to a factor.  A few of the input variables appear to be related
-of each other: pH, volatile acidity, fixed acidity and maybe, citric acid; free 
-sulfur dioxide and total sulfur dioxide. It will be interesting to see how those
-items correlate with each other and with the quality score.
+above. One major transformation we made in EDA was converting the output variable 
+"quality"from an integer value to a factor. Another item was adding a variable - 
+total.acidity - which is the sum of the three acid(ity) variables.
 
 ### What is/are the main feature(s) of interest in your dataset?
 
@@ -381,6 +409,10 @@ three-quarters of the observations are of the middle two ratings which means tha
 only about 400 items were classified at either the upper or lower extremes. It should
 be possible to examine that group of 'very good' or 'very bad' wines and to correlate
 with other variables.
+
+A few of the input variables appear to be related to each other: the variables related
+to acidity and to sulfur dioxide. It will be interesting to see how those items 
+correlate with each other and with the quality score.
 
 ### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
 
@@ -391,11 +423,10 @@ alchohol level correlates with quality. Will also be interesting to see how the 
 
 ### Did you create any new variables from existing variables in the dataset?
 
-I did not create any new variables, but I did convert two of the existing variables:
-X (renaming it 'ID') and quality into factor variables. We don't need these variables tobe summarized and it makes more intuitive sense for these variables to be factors.
-Have not at this point determined that it makes sense to create any new variables 
-from the existing ones, though perhaps something will come out of the bivariate or
-multivariate analysis.
+As mentioned previously, I did create a total.acidity variable by summing up three 
+other acid(ity) variables and we also transformed two of the existing variables:
+('X' and 'quality') into factor variables. We don't need these variables to be 
+summarized and it makes more intuitive sense for these variables to be factors.
 
 ### Of the features you investigated, were there any unusual distributions? \
 ## Did you perform any operations on the data to tidy, adjust, or change the form \
@@ -419,16 +450,29 @@ as well.
 
 
 ```{r echo=FALSE, Bivariate_Plots}
-# subsetting dataframe keying on most relevant variables
-rw_subset = rw[ ,c('quality', 'alcohol', 'pH', 'residual.sugar', 'total.sulfur.dioxide')]
-# names(rw_subset)
-str(rw_subset)
-rw_subset_num <- rw_subset
-rw_subset_num$quality <- as.numeric(rw_subset_num$quality)
-rw_subset_fact <- rw_subset
-str(rw_subset_fact)
-str(rw_subset_num)
+# make a copy of rw dataframe
+rw_copy <- cbind(rw)
+# convert the 'quality' variable from categorical to numeric so R will be able to do correlation coefficients
+rw_copy$quality <- as.numeric(levels(rw_copy$quality))[as.integer(rw_copy$quality)]
+# check t make sure conversion was made
+# str(rw_copy)
+# subsetting dataframe keying on acid-related variables
+rw_acid  <-  rw_copy[ ,c('quality', 'pH', 'total.acidity', 'fixed.acidity', 'volatile.acidity', 'citric.acid')]
+str(rw_acid)
+
 ```
+```{r}
+ggpairs(rw_acid, columns = 1:5, axisLabels = 'internal') 
+rw_acid$quality_factor <- as.factor(rw_acid$quality)
+str(rw_acid)
+ggscatmat(rw_acid, columns = 2:6, color="quality_factor", alpha=0.3)
+
+```
+
+As expected, correlations - pH and total acidity, somewhat less expected total acidity and fixed acidity, but a look back at the respecitve columns makes it seem much more intuitive.
+
+Greatest correlations with quality - volatile acidity (negative) and citric acid.
+
 ```{r}
 # toggle quality variable factor<-->numeric (comment as appropriate) 
 #rw_subset$quality <- as.numeric(rw_subset$quality)
@@ -439,6 +483,16 @@ ggpairs(rw_subset_num)
 # , upper = list(continuous = wrap(cor_text, color = "red", size = 10))
 # axisLabels = 'internal'
 ```
+```{r}
+# subsetting dataframe keying on most relevant variables
+rw_subset = rw_copy[ ,c('quality', 'alcohol', 'pH', 'residual.sugar', 'total.sulfur.dioxide')]
+# names(rw_subset)
+str(rw_subset)
+rw_subset_num <- rw_subset
+rw_subset_num$quality <- as.numeric(rw_subset_num$quality)
+rw_subset_fact <- rw_subset
+str(rw_subset_fact)
+str(rw_subset_num)
 
 ```{r}
 # toggle quality variable factor<-->numeric (comment as appropriate) 
@@ -483,6 +537,23 @@ will do that.
 rw_subset = rw[, c('volatile.acidity', 'residual.sugar', 'density', 'pH', 'alcohol', 'quality')]
 head(rw_subset,3)
 ggpairs(rw_subset[sample.int(nrow(rw_subset),1000), ])
+```
+
+```{r}
+ggplot(data = rw, aes(y = pH, x = alcohol, color = factor(quality))) +
+  geom_point() +
+  scale_color_brewer()+
+  ggtitle("Alcohol vs. pH over Quality")
+
+ggplot(data = rw, aes(y = sulphates, x = alcohol, color = factor(quality))) +
+  geom_point() +
+  scale_color_brewer()+
+  ggtitle("Alcohol vs. Sulphates over Quality")
+
+ggplot(data = rw, aes(y = volatile.acidity, x = alcohol, color = factor(quality))) +
+  geom_point() +
+  scale_color_brewer()+
+  ggtitle("Alcohol vs. Volatile Acidity over Quality")
 ```
 
 # Multivariate Analysis
