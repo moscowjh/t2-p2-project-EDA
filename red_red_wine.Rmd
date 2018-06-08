@@ -130,6 +130,12 @@ ggplot(rw) +
                  fill = "#F79420", stat="count")
 ```
 
+Following is the summary number of wines by quality score.
+
+```{r}
+summary(rw$quality)
+```
+
 ### Histograms of Other Variables
 
 Let's look at histograms of the other variables adjusting the binwidth as appropriate
@@ -434,7 +440,7 @@ summarized and it makes more intuitive sense for these variables to be factors.
 
 Yes, several of the variables'  plots displayed a skew or a relatively large number 
 of outliers. I transformed these variables using base-10 logarithims, square root 
-operations, or, in a couple cases, buy cutting off the outliers. As a result, the 
+operations, or, in a couple cases, by cutting off the outliers. As a result, the 
 transformed plots were easier to read and showed more normal distributions.
 
 # Bivariate Plots Section
@@ -462,21 +468,83 @@ str(rw_acid)
 
 ```
 ```{r}
-ggpairs(rw_acid, columns = 1:5, axisLabels = 'internal') 
+ggpairs(rw_acid, axisLabels = 'internal') 
 rw_acid$quality_factor <- as.factor(rw_acid$quality)
-str(rw_acid)
-ggscatmat(rw_acid, columns = 2:6, color="quality_factor", alpha=0.3)
+# str(rw_acid)
+# ggscatmat(rw_acid, columns = 2:6, color="quality_factor", alpha=0.3)
 
 ```
 
-As expected, correlations - pH and total acidity, somewhat less expected total acidity and fixed acidity, but a look back at the respecitve columns makes it seem much more intuitive.
+As expected, the correlations among the acid-related variables are quite high and
+in some cases approach 1.
 
-Greatest correlations with quality - volatile acidity (negative) and citric acid.
+The greatest correlations between acidity and quality are with volatile acidity 
+(negative correlation - medium) and citric acid (positive correlation - weak). Volatile
+acidity is due to aceitic acid which at high quantities gives the taste of [balsamic
+vinegar](https://winefolly.com/tutorial/wine-faults/) so the negative correlation
+is not surprising. Citric acid is a flavor enhancer in white wines, but as noted
+above is not allowed by the EU in red wine, so the positive correlation is a bit
+more surprising. We'll explore both of these items further.
+
+I was  surprised at the nearly 100% correlation between fixed acidity and total 
+acidity, but a visual inspection of the dataframe shows that I should not have been.
+```{r}
+# dataframe with acids sample
+sample_n(rw_acid,3)
+```
+Fixed acidity is by far the largest component of total acidity in grams per volume (dm^3). Since the definition of a 'fixed' acid is that it does not easily evaporate, this 
+makes sense. There is hardly any correlation between either total or fixed acidity
+and quality.
+
+### Alcohol and Residual Sugar
+
+Let's examine another theoretically related pair of variables: alchohol and residual.sugar. Since alcohol in wine is created by chemical reaction with sugar that happens during
+fermentation, our hypothesis is the higher the level of alcohol, the lower the amount
+of residual sugar.
+
+First let's subset the dataframe:
+```{r}
+rw_sugalc  <-  rw_copy[ ,c('quality', 'alcohol', 'residual.sugar')]
+rw_sugalc$quality_factor <- as.factor(rw_sugalc$quality)
+```
+
+Now let's view a scatterplot of (a subset of) residual sugar vs. alchohol (faceted by quality).
+
+```{r}
+ggplot(data = subset(rw_sugalc, quality > 6 | quality < 5), aes(y = residual.sugar, x = alcohol, color = quality_factor)) +
+  geom_point() +
+  scale_color_brewer()+
+  ggtitle("Alcohol vs. Residual Sugar over Quality")
+
+```
+Let's look at the correlation.
+```{r}
+cor(rw_sugalc$alcohol,rw_sugalc$residual.sugar)
+```
+Hypothesis here appears to be incorrect since the correlation coefficient is very small.
+
+NEED TO LOOK UP REASON OR HAVE SOME EXPLANATION
 
 ```{r}
 # toggle quality variable factor<-->numeric (comment as appropriate) 
 #rw_subset$quality <- as.numeric(rw_subset$quality)
 # rw_subset$quality <- as.factor(rw_subset$quality)
+# using dplyr select function
+rw_goodbad <- select(filter(rw_copy, quality > 6 | quality < 5), c(id,quality,
+                                                                   volatile.acidity, 
+                                                                   citric.acid,residual.sugar,
+                                                                   chlorides, sulphates, 
+                                                                   alcohol))
+# using brackets in combination with the which() function and the %in% operator
+ed_exp3 <- education[which(education$Region == 2),names(education) %in% c("State","Minor.Population","Education.Expenditures")]
+# using subset function - not recommended
+rw_goodbad <- subset(rw_copy, quality > 6 | quality < 5)
+
+ggpairs (rw_goodbad, columns = 2:8, axisLabels = 'internal')
+dim(rw_goodbad)
+cor(rw_goodbad$alcohol,rw_goodbad$residual.sugar)
+rw_goodbad_acid <- rw_goodbad[ ,c('quality', 'pH', 'total.acidity', 'fixed.acidity', 'volatile.acidity', 'citric.acid')]
+ggpairs(rw_goodbad_acid, axisLabels = 'internal')
 # first attempt to run GGpairs function to get quick plot - done with alcohol as both numeric and factoral
 ggpairs(rw_subset_fact, mapping = aes(color = quality), upper = list(combo = "dot"))
 ggpairs(rw_subset_num)
@@ -494,7 +562,6 @@ rw_subset_fact <- rw_subset
 str(rw_subset_fact)
 str(rw_subset_num)
 
-```{r}
 # toggle quality variable factor<-->numeric (comment as appropriate) 
 # rw$quality <- as.numeric(rw$quality)
 rw$quality <- as.factor(rw$quality)
