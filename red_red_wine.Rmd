@@ -2,7 +2,7 @@
 title: "Red, Red Wine"
 author: Jason Horowitz
 date: June 12, 2018
-output: html_document
+output: github_document
 ---
 
 ```{r echo=FALSE, messages=FALSE, warning=FALSE}
