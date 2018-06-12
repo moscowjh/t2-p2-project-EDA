@@ -26,6 +26,8 @@ library(plyr)
 library(reshape2)
 library(tidyverse) # includes ggplot2, dplyr, tidyr
 library(GGally) # for scatterplot matrix
+library(wesanderson)
+library(grid) #for title on top of grid matrix
 theme_set(theme_minimal(20))
 ```
 
@@ -397,10 +399,6 @@ between high/low alcohol content and the quality score.
 
 # Univariate Analysis
 
-> **Tip**: Now that you've completed your univariate explorations, it's time to
-reflect on and summarize what you've found. Use the questions below to help you
-gather your observations and add your own if you have other thoughts!
-
 ### What is the structure of your dataset?
 
 The structure of the dataset is as discussed in the "Structure and Summary" section
@@ -614,37 +612,144 @@ ggpairs (subset(rw_matrix, quality > 6 | quality < 5), columns = 2:7,
 The correlations are slightly stronger for wines at higher and lower quality ratings
 which make the scatterplots easier to interpret.
 
+## Boxplots for Key Input Variables Across Quality 
+
+The following series of boxplots will visualize the input variables with higher
+correlation coefficients across the factorized Quality variable.
+
+#### Alcohol and Quality
+
+```{r}
+ggplot(data = rw_copy, mapping = aes(x = factor(quality), y = alcohol)) +
+  geom_boxplot(aes(fill=factor(quality)))
+```
+The correlation of higher alcohol/volume with higher quality is clearly seen here
+particularly at the higher quality ratings.
+
+#### Alcohol/Volume Faceted by Quality Level
+
+These are the summary stats which are depicted  in the above boxplot.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# tapply(rw_copy$alcohol, rw_copy$quality_factor, summary)
+by(rw_copy$alcohol, factor(rw_copy$quality), summary)
+```
+
+#### Sulphates and Quality
+
+```{r}
+ggplot(data = rw_copy, mapping = aes(x = factor(quality), y = sulphates)) +
+  geom_boxplot(aes(fill=factor(quality)))
+```
+
+The weak correlation between sulphates and quality is nevertheless visible.
+
+#### Citric Acid and Quality
+
+```{r}
+ggplot(data = rw_copy, mapping = aes(x = factor(quality), y = citric.acid)) +
+  geom_boxplot(aes(fill=factor(quality)))
+```
+The correlation between citric acid and quality is also visible here. However the
+overlap in valuesindicated by the interquartile range and the substantial number 
+of wines with no citric acid (discussed above) discount the correlation.
+
+#### Volatile Acidity and Quality
+
+```{r}
+ggplot(data = rw_copy, mapping = aes(x = factor(quality), y = volatile.acidity)) +
+  geom_boxplot(aes(fill=factor(quality)))
+```
+
+The inverse correlation between volatile acidity and quality is visible here. This
+is the second-strongest correlation after  alchohol.
+
 
 # Bivariate Analysis
 
-> **Tip**: As before, summarize what you found in your bivariate explorations
-here. Use the questions below to guide your discussion.
+### Talk about some of the relationships you observed in this part of the investigation. \ How did the feature(s) of interest vary with other features in \ the dataset?
 
-### Talk about some of the relationships you observed in this part of the \
-investigation. How did the feature(s) of interest vary with other features in \
-the dataset?
+Much of the analysis here is offered inline (above). 
 
-### Did you observe any interesting relationships between the other features \
-(not the main feature(s) of interest)?
+The two strongest relationships with quality variable are the positive correlation 
+with alcohol and the negative one with volatile acidity. If I were to create a model
+predicting which items account for most of a high quality score it would be based
+on these two variables. Show me a vinho verde with high alcohol content per volume 
+and low volatile acidity and I'll bet you it's highly rated wine.
+
+### Did you observe any interesting relationships between the other features \(not the main feature(s) of interest)?
+
+Yes,the positive correlations among the various acids and acidity-related variables 
+confirms the validity of the data.  It was also interesting not to find an expected
+(negative correlation beteween alcohol and residual sugar level).
 
 ### What was the strongest relationship you found?
 
+The strongest relationship in this dataset is between alcohol and quality and also 
+among the various acidity variables.
 
 # Multivariate Plots Section
 
-> **Tip**: Now it's time to put everything together. Based on what you found in
-the bivariate plots section, create a few multivariate plots to investigate
-more complex interactions between variables. Make sure that the plots that you
-create here are justified by the plots you explored in the previous section. If
-you plan on creating any mathematical models, this is the section where you
-will do that.
+#### Volatile Acidity and Alcohol Over Quality
+
+These are the two strongest relationships with quality - volatile acidity is a 
+negative correlation and alcohol is a positive one. Setting up alcohol on the x-axis
+and volatile acidity on the y-axis, I would expect to see most of the high quality 
+wine in the lower right-hand portion of the plot and the lower-quality ones on the
+upper left.  To make the visualization more comprhensible, I'm going to plot a subset excluding the 1200 values in the medium (5-6) quality range.
 
 ```{r echo=FALSE, Multivariate_Plots}
-# scatterplot matrix
-rw_subset = rw[, c('volatile.acidity', 'residual.sugar', 'density', 'pH', 'alcohol', 'quality')]
-head(rw_subset,3)
-ggpairs(rw_subset[sample.int(nrow(rw_subset),1000), ])
+ggplot(data = subset(rw_copy, quality > 6 | quality < 5), aes(y = volatile.acidity, 
+                                                              x = alcohol, color =
+                                                                quality_factor)) +
+  geom_jitter(alpha=0.6) +
+  scale_color_manual(values = wes_palette("Darjeeling1")) +
+  ggtitle("Alcohol vs. Volatile Acidity over Quality
+          (Upper and Lower Subset)")
 ```
+
+Bingo! This was exactly what we were expecting.
+
+For completeness, here are same items plotted for the entire dataset.
+
+```{r}
+ggplot(data = rw_copy, aes(y = volatile.acidity, x = alcohol, color=quality_factor)) +
+  geom_jitter(alpha=0.3) +
+  scale_color_manual(values = wes_palette(8, name="Darjeeling1", type="continuous")) +
+  ggtitle("Alcohol vs. Volatile Acidity over Quality 
+          (Full Dataset)")
+#pal <- wes_palette(21, name = "Zissou1", type = "continuous")
+```
+#### Alcohol vs. Sulphates Over Quality
+
+Sulphates ("a wine additive which acts as an antimicrobial and antioxidant") correlates
+weakly with both quality and volatile acidity.  Let's plot the relationships among 
+these three variables.
+
+```{r}
+ggplot(data = subset(rw_copy, quality > 6 | quality < 5), aes(y = sulphates, x = alcohol, color = quality_factor)) +
+  geom_jitter(alpha=0.6) +
+  scale_color_manual(values = wes_palette(8, name="Darjeeling1", type="continuous"))+
+  ggtitle("Alcohol vs. Sulphates over Quality")
+```
+
+The relationship between alcohol/volume and quality is again clearly visible; the 
+correlation between sulpahates, quality and alcohol is weak, but also visible.
+
+```{r}
+ggplot(data = subset(rw_copy, quality > 6 | quality < 5), aes(y = sulphates, x =
+                                                              volatile.acidity, color =
+                                                                quality_factor)) +
+  geom_jitter(alpha=0.6) +
+  scale_color_manual(values = wes_palette(8, name="FantasticFox1", type="continuous")) +
+  ggtitle("Volatile Acidity vs. Sulphates over Quality")
+```
+
+Since sulphates and volatile acidity have a negative correlation and both have a 
+relationship with quality, I though I might see a pretty clear negative slope in 
+this plot. There is a slight negative slope indicating the correlation between the 
+two input variables.  And these  seem to correlate with  quality, but honestly, 
+relationships are not as clear as I had hoped.
 
 ```{r}
 ggplot(data = rw, aes(y = pH, x = alcohol, color = factor(quality))) +
@@ -688,30 +793,83 @@ make sure you justify why you chose each plot by describing what it shows.
 
 ### Plot One
 ```{r echo=FALSE, Plot_One}
-
+# distribution of the quality variable
+# histogram
+ggplot(rw_copy) +
+  geom_histogram(aes(x = quality_factor,binwidth=1), color = "black",
+                 fill = "#F79420", stat="count") +
+  xlab("Quality")
+```
+```{r}
+# summary of descriptive stats          
+summary(rw_copy$quality_factor)
 ```
 
-### Description One
+### Description for Plot One
 
+Sometimes the most descriptive stats are the simplest count statistics. This is 
+one of those cases....
 
 ### Plot Two
 ```{r echo=FALSE, Plot_Two}
+
+x <- ggplot(data = rw_copy, mapping = aes(x = factor(quality), y = alcohol)) +
+  geom_boxplot(aes(fill=factor(quality))) +
+  xlab("Quality") +
+  theme(legend.position="none")
+
+y <- ggplot(data = rw_copy, mapping = aes(x = factor(quality), y = volatile.acidity)) +
+  geom_boxplot(aes(fill=factor(quality))) +
+  xlab("Quality") +
+  theme(legend.position="none")
+
+
+grid.arrange(x, y, ncol = 2, top=textGrob("Box Plots: Top Input Variables",
+                                          gp=gpar(fontsize=14,font=8)))
+
 
 ```
 
 ### Description Two
 
+There are several ways to understand the correlation between quality and alchohol
+and quality and volatile acid, but in my view the box plots are the best visualization.
 
 ### Plot Three
 ```{r echo=FALSE, Plot_Three}
 
+ggplot(data = subset(rw_copy, quality > 6 | quality < 5), aes(y = volatile.acidity, 
+                                                              x = alcohol, color =
+                                                                quality_factor)) +
+  geom_jitter(alpha=0.6) +
+  scale_color_manual(values = wes_palette("Darjeeling1")) +
+  ggtitle("Alcohol vs. Volatile Acidity over Quality
+          (Upper and Lower Subset)")
 ```
 
 ### Description Three
 
+This is the plot which shows most clearly the two greatest relationships with Quality
+as discussed above. The plot is easier to understand with the middle values removed.
+
 ------
 
 # Reflection
+
+This project demonstrates the power of R and the GGPlot libarary to easily set up
+and modify visualizations. Using the precleaned red wine dataset eliminated some of
+the difficulties inherent in data wrangling, but because the data is so limited it
+also reduced the possibilities for interesting discovery.
+
+Clear relationships among alcohol, volatile acidity, and quality.  Knowing what I 
+know as a wine drinker wouldn't  generalize these insights to all wines, but would
+focus on specific qualities of Vinho Verde.  For instance, I don't think it is true 
+that higher alcohol wines are better, but within the Vinho Verde family that did
+seem to be the case.
+
+This was a lot of work. That was partially because R is a new language, but it also
+demonstrated to me that it's important to keep research to topics that are more 
+interesting to you.
 
 > **Tip**: Here's the final step! Reflect on the exploration you performed and
 the insights you found. What were some of the struggles that you went through?

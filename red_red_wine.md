@@ -412,8 +412,6 @@ Alcohol content by volume is slightly right-skewed and in the 9.5-11 range. This
 Univariate Analysis
 ===================
 
-> **Tip**: Now that you've completed your univariate explorations, it's time to reflect on and summarize what you've found. Use the questions below to help you gather your observations and add your own if you have other thoughts!
-
 ### What is the structure of your dataset?
 
 The structure of the dataset is as discussed in the "Structure and Summary" section above. One major transformation we made in EDA was converting the output variable "quality"from an integer value to a factor. Another item was adding a variable - total.acidity - which is the sum of the three acid(ity) variables.
@@ -508,9 +506,9 @@ sample_n(rw_acid,3)
 ```
 
     ##      quality   pH total.acidity fixed.acidity volatile.acidity citric.acid
-    ## 1083       6 3.42          7.88           7.2             0.38        0.30
-    ## 165        5 3.37          8.15           7.3             0.59        0.26
-    ## 1364       4 3.29          9.10           8.0             0.83        0.27
+    ## 1057       7 3.21          9.91           8.9             0.48        0.53
+    ## 286        5 3.31         10.56           9.9             0.59        0.07
+    ## 919        6 3.30          9.08           8.4             0.36        0.32
 
 Fixed acidity is by far the largest component of total acidity in grams per volume (dm^3). Since the definition of a 'fixed' acid is that it does not easily evaporate, this makes sense. There is hardly any correlation between either total or fixed acidity and quality.
 
@@ -591,37 +589,150 @@ ggpairs (subset(rw_matrix, quality > 6 | quality < 5), columns = 2:7,
 
 ![](red_red_wine_files/figure-markdown_github/unnamed-chunk-37-1.png) The correlations are slightly stronger for wines at higher and lower quality ratings which make the scatterplots easier to interpret.
 
+Boxplots for Key Input Variables Across Quality
+-----------------------------------------------
+
+The following series of boxplots will visualize the input variables with higher correlation coefficients across the factorized Quality variable.
+
+#### Alcohol and Quality
+
+``` r
+ggplot(data = rw_copy, mapping = aes(x = factor(quality), y = alcohol)) +
+  geom_boxplot(aes(fill=factor(quality)))
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-38-1.png) The correlation of higher alcohol/volume with higher quality is clearly seen here particularly at the higher quality ratings.
+
+#### Alcohol/Volume Faceted by Quality Level
+
+These are the summary stats which are depicted in the above boxplot.
+
+    ## factor(rw_copy$quality): 3
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##   8.400   9.725   9.925   9.955  10.575  11.000 
+    ## -------------------------------------------------------- 
+    ## factor(rw_copy$quality): 4
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##    9.00    9.60   10.00   10.27   11.00   13.10 
+    ## -------------------------------------------------------- 
+    ## factor(rw_copy$quality): 5
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##     8.5     9.4     9.7     9.9    10.2    14.9 
+    ## -------------------------------------------------------- 
+    ## factor(rw_copy$quality): 6
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##    8.40    9.80   10.50   10.63   11.30   14.00 
+    ## -------------------------------------------------------- 
+    ## factor(rw_copy$quality): 7
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##    9.20   10.80   11.50   11.47   12.10   14.00 
+    ## -------------------------------------------------------- 
+    ## factor(rw_copy$quality): 8
+    ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    ##    9.80   11.32   12.15   12.09   12.88   14.00
+
+#### Sulphates and Quality
+
+``` r
+ggplot(data = rw_copy, mapping = aes(x = factor(quality), y = sulphates)) +
+  geom_boxplot(aes(fill=factor(quality)))
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-40-1.png)
+
+The weak correlation between sulphates and quality is nevertheless visible.
+
+#### Citric Acid and Quality
+
+``` r
+ggplot(data = rw_copy, mapping = aes(x = factor(quality), y = citric.acid)) +
+  geom_boxplot(aes(fill=factor(quality)))
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-41-1.png) The correlation between citric acid and quality is also visible here. However the overlap in valuesindicated by the interquartile range and the substantial number of wines with no citric acid (discussed above) discount the correlation.
+
+#### Volatile Acidity and Quality
+
+``` r
+ggplot(data = rw_copy, mapping = aes(x = factor(quality), y = volatile.acidity)) +
+  geom_boxplot(aes(fill=factor(quality)))
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-42-1.png)
+
+The inverse correlation between volatile acidity and quality is visible here. This is the second-strongest correlation after alchohol.
+
 Bivariate Analysis
 ==================
 
-> **Tip**: As before, summarize what you found in your bivariate explorations here. Use the questions below to guide your discussion.
+### Talk about some of the relationships you observed in this part of the investigation.  How did the feature(s) of interest vary with other features in  the dataset?
 
-### Talk about some of the relationships you observed in this part of the
-investigation. How did the feature(s) of interest vary with other features in
-the dataset?
+Much of the analysis here is offered inline (above).
 
-### Did you observe any interesting relationships between the other features
-(not the main feature(s) of interest)?
+The two strongest relationships with quality variable are the positive correlation with alcohol and the negative one with volatile acidity. If I were to create a model predicting which items account for most of a high quality score it would be based on these two variables. Show me a vinho verde with high alcohol content per volume and low volatile acidity and I'll bet you it's highly rated wine.
+
+### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
+
+Yes,the positive correlations among the various acids and acidity-related variables confirms the validity of the data. It was also interesting not to find an expected (negative correlation beteween alcohol and residual sugar level).
 
 ### What was the strongest relationship you found?
+
+The strongest relationship in this dataset is between alcohol and quality and also among the various acidity variables.
 
 Multivariate Plots Section
 ==========================
 
-> **Tip**: Now it's time to put everything together. Based on what you found in the bivariate plots section, create a few multivariate plots to investigate more complex interactions between variables. Make sure that the plots that you create here are justified by the plots you explored in the previous section. If you plan on creating any mathematical models, this is the section where you will do that.
+#### Volatile Acidity and Alcohol Over Quality
 
-    ##   volatile.acidity residual.sugar density   pH alcohol quality
-    ## 1             0.70            1.9  0.9978 3.51     9.4       5
-    ## 2             0.88            2.6  0.9968 3.20     9.8       5
-    ## 3             0.76            2.3  0.9970 3.26     9.8       5
-
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+These are the two strongest relationships with quality - volatile acidity is a negative correlation and alcohol is a positive one. Setting up alcohol on the x-axis and volatile acidity on the y-axis, I would expect to see most of the high quality wine in the lower right-hand portion of the plot and the lower-quality ones on the upper left. To make the visualization more comprhensible, I'm going to plot a subset excluding the 1200 values in the medium (5-6) quality range.
 
 ![](red_red_wine_files/figure-markdown_github/Multivariate_Plots-1.png)
+
+Bingo! This was exactly what we were expecting.
+
+For completeness, here are same items plotted for the entire dataset.
+
+``` r
+ggplot(data = rw_copy, aes(y = volatile.acidity, x = alcohol, color=quality_factor)) +
+  geom_jitter(alpha=0.3) +
+  scale_color_manual(values = wes_palette(8, name="Darjeeling1", type="continuous")) +
+  ggtitle("Alcohol vs. Volatile Acidity over Quality 
+          (Full Dataset)")
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-43-1.png)
+
+``` r
+#pal <- wes_palette(21, name = "Zissou1", type = "continuous")
+```
+
+#### Alcohol vs. Sulphates Over Quality
+
+Sulphates ("a wine additive which acts as an antimicrobial and antioxidant") correlates weakly with both quality and volatile acidity. Let's plot the relationships among these three variables.
+
+``` r
+ggplot(data = subset(rw_copy, quality > 6 | quality < 5), aes(y = sulphates, x = alcohol, color = quality_factor)) +
+  geom_jitter(alpha=0.6) +
+  scale_color_manual(values = wes_palette(8, name="Darjeeling1", type="continuous"))+
+  ggtitle("Alcohol vs. Sulphates over Quality")
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-44-1.png)
+
+The relationship between alcohol/volume and quality is again clearly visible; the correlation between sulpahates, quality and alcohol is weak, but also visible.
+
+``` r
+ggplot(data = subset(rw_copy, quality > 6 | quality < 5), aes(y = sulphates, x =
+                                                              volatile.acidity, color =
+                                                                quality_factor)) +
+  geom_jitter(alpha=0.6) +
+  scale_color_manual(values = wes_palette(8, name="FantasticFox1", type="continuous")) +
+  ggtitle("Volatile Acidity vs. Sulphates over Quality")
+```
+
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-45-1.png)
+
+Since sulphates and volatile acidity have a negative correlation and both have a relationship with quality, I though I might see a pretty clear negative slope in this plot. There is a slight negative slope indicating the correlation between the two input variables. And these seem to correlate with quality, but honestly, relationships are not as clear as I had hoped.
 
 ``` r
 ggplot(data = rw, aes(y = pH, x = alcohol, color = factor(quality))) +
@@ -630,7 +741,7 @@ ggplot(data = rw, aes(y = pH, x = alcohol, color = factor(quality))) +
   ggtitle("Alcohol vs. pH over Quality")
 ```
 
-![](red_red_wine_files/figure-markdown_github/unnamed-chunk-38-1.png)
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-46-1.png)
 
 ``` r
 ggplot(data = rw, aes(y = sulphates, x = alcohol, color = factor(quality))) +
@@ -639,7 +750,7 @@ ggplot(data = rw, aes(y = sulphates, x = alcohol, color = factor(quality))) +
   ggtitle("Alcohol vs. Sulphates over Quality")
 ```
 
-![](red_red_wine_files/figure-markdown_github/unnamed-chunk-38-2.png)
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-46-2.png)
 
 ``` r
 ggplot(data = rw, aes(y = volatile.acidity, x = alcohol, color = factor(quality))) +
@@ -648,7 +759,7 @@ ggplot(data = rw, aes(y = volatile.acidity, x = alcohol, color = factor(quality)
   ggtitle("Alcohol vs. Volatile Acidity over Quality")
 ```
 
-![](red_red_wine_files/figure-markdown_github/unnamed-chunk-38-3.png)
+![](red_red_wine_files/figure-markdown_github/unnamed-chunk-46-3.png)
 
 Multivariate Analysis
 =====================
@@ -671,20 +782,50 @@ Final Plots and Summary
 
 ### Plot One
 
-### Description One
+    ## Warning: Ignoring unknown parameters: binwidth, bins, pad
+
+    ## Warning: Ignoring unknown aesthetics: binwidth
+
+![](red_red_wine_files/figure-markdown_github/Plot_One-1.png)
+
+``` r
+# summary of descriptive stats          
+summary(rw_copy$quality_factor)
+```
+
+    ##   3   4   5   6   7   8 
+    ##  10  53 681 638 199  18
+
+### Description for Plot One
+
+Sometimes the most descriptive stats are the simplest count statistics. This is one of those cases....
 
 ### Plot Two
 
+![](red_red_wine_files/figure-markdown_github/Plot_Two-1.png)
+
 ### Description Two
+
+There are several ways to understand the correlation between quality and alchohol and quality and volatile acid, but in my view the box plots are the best visualization.
 
 ### Plot Three
 
+![](red_red_wine_files/figure-markdown_github/Plot_Three-1.png)
+
 ### Description Three
+
+This is the plot which shows most clearly the two greatest relationships with Quality as discussed above. The plot is easier to understand with the middle values removed.
 
 ------------------------------------------------------------------------
 
 Reflection
 ==========
+
+This project demonstrates the power of R and the GGPlot libarary to easily set up and modify visualizations. Using the precleaned red wine dataset eliminated some of the difficulties inherent in data wrangling, but because the data is so limited it also reduced the possibilities for interesting discovery.
+
+Clear relationships among alcohol, volatile acidity, and quality. Knowing what I know as a wine drinker wouldn't generalize these insights to all wines, but would focus on specific qualities of Vinho Verde. For instance, I don't think it is true that higher alcohol wines are better, but within the Vinho Verde family that did seem to be the case.
+
+This was a lot of work. That was partially because R is a new language, but it also demonstrated to me that it's important to keep research to topics that are more interesting to you.
 
 > **Tip**: Here's the final step! Reflect on the exploration you performed and the insights you found. What were some of the struggles that you went through? What went well? What was surprising? Make sure you include an insight into future work that could be done with the dataset.
 
