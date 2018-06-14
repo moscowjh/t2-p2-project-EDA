@@ -3,14 +3,14 @@ Red, Red Wine
 Jason Horowitz
 June 12, 2018
 
-    ## ── Attaching packages ──────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ───────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 2.2.1     ✔ purrr   0.2.5
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.5
     ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ─────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::arrange()   masks plyr::arrange()
     ## ✖ dplyr::combine()   masks gridExtra::combine()
     ## ✖ purrr::compact()   masks plyr::compact()
@@ -478,10 +478,10 @@ total acidity, but a visual inspection of the dataframe shows that I
 should not have
     been.
 
-    ##      quality   pH total.acidity fixed.acidity volatile.acidity citric.acid
-    ## 1255       5 3.40          8.56           7.8             0.70        0.06
-    ## 813        5 3.24         11.58          10.8             0.45        0.33
-    ## 156        5 3.42          7.95           7.1             0.43        0.42
+    ##     quality   pH total.acidity fixed.acidity volatile.acidity citric.acid
+    ## 310       6 3.41         8.070           7.4            0.290        0.38
+    ## 241       5 3.00         9.905           8.9            0.635        0.37
+    ## 924       6 3.38         7.520           6.8            0.410        0.31
 
 Fixed acidity is by far the largest component of total acidity in grams
 per volume (dm^3). Since the definition of a ‘fixed’ acid is that it

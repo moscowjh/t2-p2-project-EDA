@@ -2,7 +2,7 @@
 title: "Red, Red Wine"
 author: Jason Horowitz
 date: June 12, 2018
-output: github_document
+output: html_document
 ---
 
 ```{r echo=FALSE, messages=FALSE, warning=FALSE}
@@ -495,7 +495,7 @@ Following is a plot of rw_acid (made using the ggpairs function of the ggally li
 Note that we are using the integer quality variable so that the function can calculate
 correlation coefficients.
 
-```{r echo=FALSE, fig.height=7, fig.width=7, messages=FALSE, warning=FALSE}
+```{r echo=FALSE, fig.height=20, fig.width=20, messages=FALSE, warning=FALSE}
 # scatterplot matrix of rw_acid variables
 # changes made per feedback of Udacity reviewer on 6/13/2018
 # changes in font size made per example set in the ggally support website
@@ -600,7 +600,7 @@ we suspect may be correlated with quality:
 
 This time we'll subset using the dplyr library.
 
-```{r  echo=FALSE, fig.height=7, fig.width=7, messages=FALSE, warning=FALSE}
+```{r  echo=FALSE, fig.height=20, fig.width=20, messages=FALSE, warning=FALSE}
 # changes made per feedback of Udacity reviewer on 6/13/2018
 # changes in font size made per example set in the ggally support website
 # https://github.com/ggobi/ggally/issues/31
@@ -641,7 +641,7 @@ The input variables that correlate with other variables are:
 Alright, I'm going to run the same scatterplot using the dataframe with the 5-6 
 quality range filtered out to see if anything stands out at the high and low ranges.
 
-```{r echo=FALSE, fig.height=7, fig.width=7, messages=FALSE, warning=FALSE}
+```{r echo=FALSE, fig.height=20, fig.width=20, messages=FALSE, warning=FALSE}
 # changes made per feedback of Udacity reviewer on 6/13/2018
 # changes in font size made per example set in the ggally support website
 # https://github.com/ggobi/ggally/issues/31
@@ -904,7 +904,7 @@ x <- ggplot(data = rw_copy, mapping = aes(x = quality_factor, y = alcohol)) +
   geom_jitter(alpha=1/10)+
   stat_summary(fun.y='mean', geom='point',color='red') +
   theme(legend.position='none') +
-  labs(x ="quality", y="alcohol/volume")  +
+  labs(x ="quality", y="alcohol %/volume")  +
   ggtitle("Alcohol") + 
   theme(plot.title = element_text(size=14),axis.title = element_text(size=14))
   
@@ -945,7 +945,7 @@ ggplot(data = subset(rw_copy, quality > 6 | quality < 5), aes(y = volatile.acidi
   scale_color_manual(values = wes_palette("Darjeeling1")) +
   ggtitle("Alcohol vs. Volatile Acidity over Quality
           (Upper and Lower Subset)") +
-  labs(x="alcohol/volume", y="acetic acid - g/dm^3") +
+  labs(x="alcohol %/volume", y="acetic acid - g/dm^3") +
   theme(plot.title = element_text(size=16), axis.title = element_text(size=14),
         legend.title=element_text(size=14)) +
   scale_color_discrete("Quality")
