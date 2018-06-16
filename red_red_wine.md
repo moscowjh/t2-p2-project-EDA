@@ -207,9 +207,10 @@ multivariate analysis to follow.
 
 #### Fixed Acidity
 
-![](red_red_wine_files/figure-gfm/unnamed-chunk-8-1.png)<!-- --> Since
-this appears to have a long-tail distribution, we will transform the
-variable using the log base 10 scale.
+![](red_red_wine_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+Since this appears to have a long-tail distribution, we will transform
+the variable using the log base 10 scale.
 
 ![](red_red_wine_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
@@ -478,10 +479,10 @@ total acidity, but a visual inspection of the dataframe shows that I
 should not have
     been.
 
-    ##     quality   pH total.acidity fixed.acidity volatile.acidity citric.acid
-    ## 310       6 3.41         8.070           7.4            0.290        0.38
-    ## 241       5 3.00         9.905           8.9            0.635        0.37
-    ## 924       6 3.38         7.520           6.8            0.410        0.31
+    ##      quality   pH total.acidity fixed.acidity volatile.acidity citric.acid
+    ## 1513       6 3.53          7.23           6.4             0.79        0.04
+    ## 1593       6 3.42          6.94           6.3             0.51        0.13
+    ## 807        7 3.27          9.04           8.4             0.25        0.39
 
 Fixed acidity is by far the largest component of total acidity in grams
 per volume (dm^3). Since the definition of a ‘fixed’ acid is that it

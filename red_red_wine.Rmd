@@ -2,7 +2,7 @@
 title: "Red, Red Wine"
 author: Jason Horowitz
 date: June 12, 2018
-output: html_document
+output: github_document
 ---
 
 ```{r echo=FALSE, messages=FALSE, warning=FALSE}
@@ -161,6 +161,7 @@ ggplot(rw_copy) +
                  fill = "#FFFF66", binwidth = .1)
 
 ```
+
 Since this appears to have a long-tail distribution, we will transform the variable
 using the log base 10 scale.
 
